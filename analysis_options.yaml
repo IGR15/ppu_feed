@@ -1,0 +1,7 @@
+include: package:flutter_lints/flutter.yaml
+analyzer:
+  errors:
+    prefer_const_constructors: ignore
+    avoid_print: ignore
+    unnecessary_nullable_for_final_variable_declarations: ignore ignore
+    use_build_context_synchronously: ignore
