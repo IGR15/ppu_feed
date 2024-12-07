@@ -73,7 +73,7 @@ class _FeedsScreenState extends State<FeedsScreen> {
                     icon: const Icon(Icons.add),
                     onPressed: () async {
                       await subscribeToCourse(course.id.toString());
-                      setState(() {}); // Refresh the UI
+                      setState(() {});
                     },
                   ),
                 );
