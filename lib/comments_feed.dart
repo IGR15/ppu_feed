@@ -17,7 +17,7 @@ class CommentsFeedScreen extends StatelessWidget {
     if (token == null) throw Exception("Authentication token not found.");
 
     final res = await http.get(
-      Uri.parse("http://feeds.ppu.edu/posts/$postId/comments"),
+      Uri.parse("http://feeds.ppu.edu/api/v1/posts/$postId/comments"),
       headers: {'Authorization': token},
     );
 

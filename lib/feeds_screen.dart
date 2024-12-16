@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:ppu_feed/modules/course.dart';
+import 'package:ppu_feed/sections_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -20,7 +21,7 @@ class _FeedsScreenState extends State<FeedsScreen> {
     if (token == null) throw Exception("Authentication token not found.");
 
     final res = await http.get(
-      Uri.parse("http://feeds.ppu.edu/courses"),
+      Uri.parse("http://feeds.ppu.edu/api/v1/courses"),
       headers: {'Authorization': token},
     );
 
@@ -39,7 +40,7 @@ class _FeedsScreenState extends State<FeedsScreen> {
     if (token == null) throw Exception("Authentication token not found.");
 
     final res = await http.post(
-      Uri.parse("http://feeds.ppu.edu/courses/$courseId/subscribe"),
+      Uri.parse("http://feeds.ppu.edu/api/v1/courses/$courseId/subscribe"),
       headers: {'Authorization': token},
     );
 
@@ -65,16 +66,27 @@ class _FeedsScreenState extends State<FeedsScreen> {
             return ListView.builder(
               itemCount: courses.length,
               itemBuilder: (context, index) {
-                final course = courses[index];
-                return ListTile(
-                  title: Text(course.name),
-                  subtitle: Text("College: ${course.college}"),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: () async {
-                      await subscribeToCourse(course.id.toString());
-                      setState(() {});
-                    },
+                Course course = courses[index];
+                return Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.teal[300],
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: ListTile(
+                      title: Text(course.name),
+                      subtitle: Text("College: ${course.college}"),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CourseFeedScreen(courseId: course.id),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 );
               },

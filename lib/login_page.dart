@@ -19,29 +19,29 @@ class _LoginPageState extends State<LoginPage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   Future<void> login() async {
-    try{
-    http.Response response = await http.post(Uri.parse(loginUrl),
-        body: json.encode({
-          'email': emailController.text,
-          'password': passwordController.text
-        }));
-    print(response.statusCode);
-    print(response.body);
-    if (response.statusCode == 200) {
-      dynamic jsonObject = jsonDecode(response.body);
-      print(jsonObject['status']);
-      if (jsonObject['status'] == 'success') {
-        String token = jsonObject['session_token'];
-        final SharedPreferences? prefs = await _prefs;
+    try {
+      http.Response response = await http.post(Uri.parse(loginUrl),
+          body: json.encode({
+            'email': emailController.text,
+            'password': passwordController.text
+          }));
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode == 200) {
+        dynamic jsonObject = jsonDecode(response.body);
+        print(jsonObject['status']);
+        if (jsonObject['status'] == 'success') {
+          String token = jsonObject['session_token'];
+          final SharedPreferences? prefs = await _prefs;
 
-        await prefs?.setString('token', token);
-        Navigator.pushReplacementNamed(context, "/home_page");
+          await prefs?.setString('token', token);
+          Navigator.pushReplacementNamed(context, "/home_page");
+        }
       }
+    } catch (error) {
+      print("Error: $error");
     }
   }
-  catch (error) {
-    print("Error: $error");
-  }}
 
   @override
   void initState() {
@@ -105,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
                   ElevatedButton(
                     onPressed: () {
                       try {
-                       login();
+                        login();
                       } catch (e) {
                         print(e);
                       }

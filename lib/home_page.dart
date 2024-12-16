@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ppu_feed/course_feed.dart';
+import 'package:ppu_feed/sections_screen.dart';
 import 'package:ppu_feed/feeds_screen.dart';
 import 'package:ppu_feed/modules/subscripions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
