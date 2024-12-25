@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ppu_feed/controller/subscriptions_controller.dart';
-import 'package:ppu_feed/posts_screen.dart';
-import 'package:ppu_feed/courses_screen.dart';
+import 'package:ppu_feed/views/posts_screen.dart';
+import 'package:ppu_feed/views/courses_screen.dart';
 import 'package:ppu_feed/model/subscripions.dart';
 
 class HomePage extends StatefulWidget {

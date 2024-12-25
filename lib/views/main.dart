@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ppu_feed/home_page.dart';
-import 'package:ppu_feed/login_page.dart';
+import 'package:ppu_feed/views/home_page.dart';
+import 'package:ppu_feed/views/login_page.dart';
 import 'package:ppu_feed/model/subscripions.dart';
 
 void main() {

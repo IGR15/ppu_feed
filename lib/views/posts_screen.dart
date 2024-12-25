@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:ppu_feed/comments_screen.dart';
+import 'package:ppu_feed/views/comments_screen.dart';
 import 'package:ppu_feed/controller/post_controller.dart';
 import 'package:ppu_feed/model/post.dart';
 import 'package:shared_preferences/shared_preferences.dart';

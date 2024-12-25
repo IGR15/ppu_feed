@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:ppu_feed/controller/courses_controller.dart';
 import 'package:ppu_feed/model/course.dart';
-import 'package:ppu_feed/sections_screen.dart';
+import 'package:ppu_feed/views/sections_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
