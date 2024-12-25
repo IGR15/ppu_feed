@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:ppu_feed/controller/login_controller.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,33 +16,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final String loginUrl = "http://feeds.ppu.edu/api/login";
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
-  Future<void> login() async {
-    try{
-    http.Response response = await http.post(Uri.parse(loginUrl),
-        body: json.encode({
-          'email': emailController.text,
-          'password': passwordController.text
-        }));
-    print(response.statusCode);
-    print(response.body);
-    if (response.statusCode == 200) {
-      dynamic jsonObject = jsonDecode(response.body);
-      print(jsonObject['status']);
-      if (jsonObject['status'] == 'success') {
-        String token = jsonObject['session_token'];
-        final SharedPreferences? prefs = await _prefs;
-
-        await prefs?.setString('token', token);
-        Navigator.pushReplacementNamed(context, "/home_page");
-      }
-    }
-  }
-  catch (error) {
-    print("Error: $error");
-  }}
+  loginController controller = loginController();
+  
 
   @override
   void initState() {
@@ -105,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                   ElevatedButton(
                     onPressed: () {
                       try {
-                       login();
+                        controller.login(context,emailController.text,passwordController.text);
                       } catch (e) {
                         print(e);
                       }
