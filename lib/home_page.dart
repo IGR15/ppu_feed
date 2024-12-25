@@ -1,10 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:ppu_feed/main.dart';
-import 'package:ppu_feed/subscripions.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ppu_feed/controller/subscriptions_controller.dart';
+import 'package:ppu_feed/posts_screen.dart';
+import 'package:ppu_feed/courses_screen.dart';
+import 'package:ppu_feed/model/subscripions.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,55 +12,75 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<List<Subscripions>> fetchSubscriptions() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
-
-    if (token == null) {
-      throw Exception("Authentication token not found. Please log in.");
-    }
-
-    var res = await http.get(
-      Uri.parse("http://feeds.ppu.edu/api/v1/subscriptions"),
-      headers: {
-        'Authorization': token,
-      },
-    );
-
-    if (res.statusCode == 200) {
-      print(token);
-      var jsonArr = jsonDecode(res.body) as List;
-      return jsonArr.map((e) => Subscripions.fromJson(e)).toList();
-    } else {
-      throw Exception("Failed to fetch subscriptions: ${res.statusCode}");
-    }
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // fetchSubscripions().then((onValue) {
-    //   MainApp.subscripions = onValue;
-    // });
-    fetchSubscriptions();
-  }
+  SubscriptionsController controller = SubscriptionsController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          "🌟 PPU Feeds 🌟",
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
-            fontFamily: 'Roboto',
-          ),
-        ),
+        title: const Text("🌟 My Subscriptions 🌟"),
         backgroundColor: Colors.teal,
+      ),
+      body: FutureBuilder<List<Subscripions>>(
+        future: controller.fetchSubscriptions(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text("Error: ${snapshot.error}"));
+          } else if (snapshot.hasData) {
+            final subscriptions = snapshot.data!;
+            if (subscriptions.isEmpty) {
+              return const Center(child: Text("No active subscriptions."));
+            }
+            return ListView.builder(
+              itemCount: subscriptions.length,
+              itemBuilder: (context, index) {
+                final subscription = subscriptions[index];
+
+                return ListTile(
+                  title: Text(subscription.course),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Section: ${subscription.section}"),
+                      Text("Lecturer: ${subscription.lecturer}"),
+                      Text(
+                        "Subscribed on: ${subscription.subscription_date.toLocal().toString().split(' ')[0]}",
+                        style:
+                            const TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                  
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PostsScreen(
+                            courseId: subscription.id,
+                            sectionId: subscription.sectionId),
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          } else {
+            return const Center(child: Text("No data available."));
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const FeedsScreen()),
+          );
+        },
+        child: const Icon(Icons.search),
+        backgroundColor: Colors.teal,
+        tooltip: "Explore Courses",
       ),
     );
   }
